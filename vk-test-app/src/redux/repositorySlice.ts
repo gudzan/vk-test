@@ -25,12 +25,10 @@ export const repositorySlice = createSlice({
       const id = action.payload.repository.id
       const modifiedArray = state.items.map((element) => {
         if (element.id === id) {
-            return action.payload.repository;
+          return action.payload.repository;
         }
         return element;
-    });
-
-
+      });
       state.items = modifiedArray
     },
     repositoryRemoved: (state, action: PayloadAction<{ repositoryId: number }>) => {

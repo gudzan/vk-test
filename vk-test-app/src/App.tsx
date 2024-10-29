@@ -1,63 +1,35 @@
+import React from 'react';
 import { useEffect, useState } from 'react'
 import './App.css'
-import { AxiosResponse } from 'axios'
 import Repository from './types/repository'
 import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { List, ListItem, Card, CardContent, Typography, CardHeader, Avatar, CardActions, IconButton, AppBar, Toolbar, MenuItem, Select, Link, SelectChangeEvent } from '@mui/material';
 import convertDateString from './utils/convertDate';
-import getRepositories from './api/repositories';
 import Sort from './types/sort';
-import RepositoriesResponse from './types/repositoriesResponse';
 import { useAppDispath, useAppSelector } from './redux/store';
-import { repositoryEdit, repositoryReceved, repositoryRemoved, repositoryRequested, repositoryRequestFailed } from './redux/repositorySlice';
+import { repositoryEdit, repositoryRemoved } from './redux/repositorySlice';
 import EditModal from './components/EditModal/EditModal';
+import useAxios from './hooks/useAxios';
 
 function App() {
-  const [repositories, setRepositories] = useState<Repository[]>([])
+  const dispatch = useAppDispath();
   const [editRepository, setEditRepository] = useState<Repository | null>(null)
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [fetching, setFetching] = useState<boolean>(true)
-  const [totalCount, setTotalCount] = useState<number>(0)
   const [openModal, setOpenModal] = useState<boolean>(false)
-
   const [sort, setSort] = useState<Sort>({
     sortField: "stars",
     sortOrder: "desc"
   })
-
-  console.log("test -", import.meta.env.VITE_APP_TEST)
-
-  const dispatch = useAppDispath();
   const repositoriesStore: Repository[] = useAppSelector(
     (state) => state.repository.items
   );
 
+  const { repositories, setRepositories, fetching, totalCount, refetch, refresh } = useAxios(sort)
+
   useEffect(() => {
     setRepositories(repositoriesStore);
   }, [repositoriesStore]);
-
-  useEffect(() => {
-    if (fetching) {
-      dispatch(repositoryRequested());
-      getRepositories(sort, currentPage)
-        .then((response: AxiosResponse<RepositoriesResponse>) => {
-          const newRepositories = [...repositories, ...response.data.items]
-          const newTotalCount = response.data.total_count
-          setRepositories(newRepositories)
-          setTotalCount(newTotalCount)
-          setCurrentPage(prevState => prevState + 1)
-          dispatch(repositoryReceved({
-            items: newRepositories,
-            totalCount: newTotalCount
-          }
-          ));
-        })
-        .catch(() => dispatch(repositoryRequestFailed()))
-        .finally(() => setFetching(false))
-    }
-  }, [fetching])
 
   useEffect(() => {
     document.addEventListener('scroll', scrollHandler)
@@ -67,9 +39,7 @@ function App() {
   }, [totalCount])
 
   useEffect(() => {
-    setRepositories([])
-    setCurrentPage(1)
-    setFetching(true)
+    refresh()
   }, [sort])
 
   const scrollHandler = (e: any) => {
@@ -77,7 +47,7 @@ function App() {
     const scrollTop = e.target.documentElement.scrollTop;
     const innerHeight = window.innerHeight
     if ((scrollHeight - (scrollTop + innerHeight) < 100) && (repositories.length < totalCount)) {
-      setFetching(true)
+      refetch()
     }
   }
 
@@ -111,7 +81,6 @@ function App() {
   const handleClose = () => {
     setOpenModal(false)
     setEditRepository(null)
-
   }
 
   const edit = (repository: Repository) => {

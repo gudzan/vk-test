@@ -1,3 +1,4 @@
+import React from 'react';
 import "./Overlay.scss"
 type OverlayProps = {
   openOverlay: boolean;

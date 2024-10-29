@@ -33,7 +33,7 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
   }
 
   return (
-    <>
+    <div>
       <Overlay openOverlay={open} closeOverlay={() => closeEditModal()} />
       <div className={newChatClassName}>
         <button type="button" className="icon new-repo__close" onClick={() => closeEditModal()}><CloseIcon /></button>
@@ -100,7 +100,7 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
           <button type="submit" className="new-repo__submit">Сохранить</button>
         </form>
       </div>
-    </>
+    </div>
   )
 }
 
