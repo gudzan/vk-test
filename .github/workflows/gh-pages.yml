@@ -15,9 +15,11 @@ jobs:
     - name: Build app
       working-directory: ./vk-test-app
       run: npm run build
+      env:
+        VITE_APP_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+        VITE_APP_TEST: ${{ secrets.GITHUB_TOKEN }}
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        # VITE_APP_API_KEY: ${{ secrets.VITE_APP_API_KEY }}
         publish_dir: ./vk-test-app/dist
