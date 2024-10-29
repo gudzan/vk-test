@@ -1,8 +1,6 @@
 name: GitHub Pages
 run-name: ${{ github.actor }} is rolling out a new version of the app 🚀
-on: [push]
-env:
-  VITE_APP_API_KEY: ${{ secrets.VITE_APP_API_KEY }}
+on: [push] 
 jobs:
   Build-and-Deploy:
     runs-on: ubuntu-latest
@@ -21,4 +19,5 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        # VITE_APP_API_KEY: ${{ secrets.VITE_APP_API_KEY }}
         publish_dir: ./vk-test-app/dist
