@@ -27,6 +27,8 @@ function App() {
     sortOrder: "desc"
   })
 
+  console.log("test -", import.meta.env.VITE_APP_TEST)
+
   const dispatch = useAppDispath();
   const repositoriesStore: Repository[] = useAppSelector(
     (state) => state.repository.items
