@@ -3,43 +3,58 @@ import './App.css'
 import { AxiosResponse } from 'axios'
 import Repository from './types/repository'
 import RefreshIcon from '@mui/icons-material/Refresh';
+import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { List, ListItem, Card, CardContent, Typography, CardHeader, Avatar, CardActions, IconButton, AppBar, Toolbar, MenuItem, Select, Link, SelectChangeEvent } from '@mui/material';
+import { List, ListItem, Card, CardContent, Typography, CardHeader, Avatar, CardActions, IconButton, AppBar, Toolbar, MenuItem, Select, Link, SelectChangeEvent, Modal, Box } from '@mui/material';
 import convertDateString from './utils/convertDate';
 import getRepositories from './api/repositories';
 import Sort from './types/sort';
 import RepositoriesResponse from './types/repositoriesResponse';
+import { useAppDispath, useAppSelector } from './redux/store';
+import { repositoryEdit, repositoryReceved, repositoryRemoved, repositoryRequested, repositoryRequestFailed } from './redux/repositorySlice';
+import Overlay from './components/Overlay/Overlay';
+import EditModal from './components/EditModal/EditModal';
 
 function App() {
   const [repositories, setRepositories] = useState<Repository[]>([])
+  const [editRepository, setEditRepository] = useState<Repository | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [fetching, setFetching] = useState<boolean>(true)
   const [totalCount, setTotalCount] = useState<number>(0)
+  const [openModal, setOpenModal] = useState<boolean>(false)
+
   const [sort, setSort] = useState<Sort>({
     sortField: "stars",
     sortOrder: "desc"
   })
 
+  const dispatch = useAppDispath();
+  const repositoriesStore: Repository[] = useAppSelector(
+    (state) => state.repository.items
+  );
+
+  useEffect(() => {
+    setRepositories(repositoriesStore);
+  }, [repositoriesStore]);
+
   useEffect(() => {
     if (fetching) {
-      // const token = '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'
-      // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      // axios.get(`https://api.github.com/search/repositories?q=javascript&sort=${sort.sortField}&order=${sort.sortOrder}&page=${currentPage}&per_page=10`)
-      //   .then((response: AxiosResponse<GetRepositoriesResponse>) => {
-      //     const responseData = response.data;
-      //     setRepositories([...repositories, ...responseData.items])
-      //     setTotalCount(responseData.total_count)
-      //     setCurrentPage(prevState => prevState + 1)
-      //   })
-      //   .finally(() => setFetching(false))
-
+      dispatch(repositoryRequested());
       getRepositories(sort, currentPage)
         .then((response: AxiosResponse<RepositoriesResponse>) => {
-          setRepositories([...repositories, ...response.data.items])
-          setTotalCount(response.data.total_count)
+          const newRepositories = [...repositories, ...response.data.items]
+          const newTotalCount = response.data.total_count
+          setRepositories(newRepositories)
+          setTotalCount(newTotalCount)
           setCurrentPage(prevState => prevState + 1)
+          dispatch(repositoryReceved({
+            items: newRepositories,
+            totalCount: newTotalCount
+          }
+          ));
         })
+        .catch(() => dispatch(repositoryRequestFailed()))
         .finally(() => setFetching(false))
     }
   }, [fetching])
@@ -82,6 +97,36 @@ function App() {
     }));
   }
 
+  const handleRemove = (repository: Repository) => {
+    if (repositories.indexOf(repository) !== -1) {
+      dispatch(repositoryRemoved({ repositoryId: repository.id }))
+    }
+  }
+
+  const handleEdit = (repository: Repository) => {
+    setOpenModal(true)
+    setEditRepository(repository)
+  }
+
+  const handleClose = () => {
+    setOpenModal(false)
+    setEditRepository(null)
+
+  }
+
+  const edit = (repository: Repository) => {
+    setOpenModal(false)
+    setEditRepository(null)
+    dispatch(repositoryEdit({ repository: repository }))
+  }
+
+
+  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    console.log("submit");
+  }
+
+
   return (
     <div >
       <header>
@@ -113,6 +158,9 @@ function App() {
         <Toolbar />
       </header>
       <main className='container'>
+        {
+          editRepository && <EditModal open={openModal} closeEditModal={handleClose} edit={edit} repository={editRepository} />
+        }
         <List className='list'>
           {repositories.map((element) =>
           (
@@ -149,10 +197,10 @@ function App() {
                 </CardContent>
 
                 <CardActions disableSpacing>
-                  <IconButton aria-label="edit" color="success" onClick={() => { console.log("edit") }}>
+                  <IconButton aria-label="edit" color="success" onClick={() => handleEdit(element)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton aria-label="delete" color="error" onClick={() => { console.log("delete") }}>
+                  <IconButton aria-label="delete" color="error" onClick={() => handleRemove(element)}>
                     <DeleteIcon />
                   </IconButton>
                 </CardActions>
@@ -162,7 +210,7 @@ function App() {
           )}
         </List>
         {fetching && (
-          <div className="icon">
+          <div className="spinner">
             <RefreshIcon />
           </div>)}
       </main>

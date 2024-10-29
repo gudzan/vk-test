@@ -20,7 +20,7 @@
   width: 100%;
 }
 
-.icon svg {
+.spinner svg {
   color: gray;
   font-size: 60px;
   animation: spinning 1s infinite linear;
@@ -33,6 +33,24 @@
 
   100% {
     transform: rotate(360deg);
+  }
+}
+button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
