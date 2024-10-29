@@ -3,17 +3,15 @@ import './App.css'
 import { AxiosResponse } from 'axios'
 import Repository from './types/repository'
 import RefreshIcon from '@mui/icons-material/Refresh';
-import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { List, ListItem, Card, CardContent, Typography, CardHeader, Avatar, CardActions, IconButton, AppBar, Toolbar, MenuItem, Select, Link, SelectChangeEvent, Modal, Box } from '@mui/material';
+import { List, ListItem, Card, CardContent, Typography, CardHeader, Avatar, CardActions, IconButton, AppBar, Toolbar, MenuItem, Select, Link, SelectChangeEvent } from '@mui/material';
 import convertDateString from './utils/convertDate';
 import getRepositories from './api/repositories';
 import Sort from './types/sort';
 import RepositoriesResponse from './types/repositoriesResponse';
 import { useAppDispath, useAppSelector } from './redux/store';
 import { repositoryEdit, repositoryReceved, repositoryRemoved, repositoryRequested, repositoryRequestFailed } from './redux/repositorySlice';
-import Overlay from './components/Overlay/Overlay';
 import EditModal from './components/EditModal/EditModal';
 
 function App() {
@@ -119,13 +117,6 @@ function App() {
     setEditRepository(null)
     dispatch(repositoryEdit({ repository: repository }))
   }
-
-
-  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    console.log("submit");
-  }
-
 
   return (
     <div >
