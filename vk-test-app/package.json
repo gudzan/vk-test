@@ -15,8 +15,7 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.tsx?$": "ts-jest",
-      ".+\\.(css|styl|less|sass|scss)$": "jest-transform-css"
+      "^.+\\.tsx?$": "ts-jest"
     },
     "testEnvironment": "jsdom",
     "transformIgnorePatterns": [
