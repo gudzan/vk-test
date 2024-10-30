@@ -1,12 +1,11 @@
 import React from 'react';
-import "./Overlay.scss"
+import styles from "./Overlay.module.css"
 type OverlayProps = {
   openOverlay: boolean;
   closeOverlay: Function
 };
 const Overlay = ({ openOverlay, closeOverlay }: OverlayProps) => {
-  const overlayClassName = `overlay ${openOverlay ? "open" : "close"}`
-
+  const overlayClassName = `${styles.overlay} ${openOverlay ? `${styles.open}` : `${styles.close}`}`
   return (
     <div className={overlayClassName} onClick={() => closeOverlay()}></div>
   )

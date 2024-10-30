@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
-import './EditModal.scss'
+import styles from "./EditModal.module.css"
 import Overlay from "../Overlay/Overlay";
 import { TextField } from "@mui/material";
 import Repository from "../../types/repository";
-
 
 type EditModalProps = {
   open: boolean;
@@ -12,21 +11,19 @@ type EditModalProps = {
   edit: Function
   repository: Repository
 };
+
 const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) => {
-  const [newRepositories, setNewRepositories] = useState(repository)
-  const newChatClassName = `new-repo ${open ? "open" : ""}`
+  const [editRepositories, setEditRepositories] = useState(repository)
+  const modalClassName = `${styles.modal} ${open ? `${styles.open}` : ""}`
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault()
-    edit(newRepositories)
+    edit(editRepositories)
   }
-  console.log(newRepositories.name, newRepositories.description);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    console.log(name);
-
-    setNewRepositories((prevState) => ({
+    setEditRepositories((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -35,10 +32,10 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
   return (
     <div>
       <Overlay openOverlay={open} closeOverlay={() => closeEditModal()} />
-      <div className={newChatClassName}>
-        <button type="button" className="icon new-repo__close" onClick={() => closeEditModal()}><CloseIcon /></button>
-        <form className="new-repo__form" onSubmit={handleSubmit}>
-          <span className="new-repo__title">Радактирование</span>
+      <div className={modalClassName}>
+        <button type="button" className={`${styles.icon} ${styles.modal__close}`} onClick={() => closeEditModal()}><CloseIcon /></button>
+        <form className={styles.modal__form} onSubmit={handleSubmit}>
+          <span className={styles.modal__title}>Радактирование</span>
           <TextField
             name="name"
             type="text"
@@ -46,7 +43,7 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
             color='secondary'
             label="Name"
             onChange={onChange}
-            value={newRepositories.name}
+            value={editRepositories.name}
             fullWidth
             required
           />
@@ -60,7 +57,7 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
             color='secondary'
             label="Description"
             onChange={onChange}
-            value={newRepositories.description}
+            value={editRepositories.description}
             fullWidth
             required
           />
@@ -71,7 +68,7 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
             color='secondary'
             label="Forks"
             onChange={onChange}
-            value={newRepositories.forks_count}
+            value={editRepositories.forks_count}
             fullWidth
             required
           />
@@ -82,7 +79,7 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
             color='secondary'
             label="Stars"
             onChange={onChange}
-            value={newRepositories.stargazers_count}
+            value={editRepositories.stargazers_count}
             fullWidth
             required
           />
@@ -93,11 +90,11 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
             color='secondary'
             label="Watchers"
             onChange={onChange}
-            value={newRepositories.watchers}
+            value={editRepositories.watchers}
             fullWidth
             required
           />
-          <button type="submit" className="new-repo__submit">Сохранить</button>
+          <button type="submit" className={styles.modal__submit}>Сохранить</button>
         </form>
       </div>
     </div>

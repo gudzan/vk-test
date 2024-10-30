@@ -1,31 +1,27 @@
-import React from 'react';
-import { useEffect, useState } from 'react'
-import './App.css'
+import React, { useEffect, useState } from 'react';
+import styles from "./App.module.css"
 import Repository from './types/repository'
-import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { List, ListItem, Card, CardContent, Typography, CardHeader, Avatar, CardActions, IconButton, AppBar, Toolbar, MenuItem, Select, Link, SelectChangeEvent } from '@mui/material';
+import { List, ListItem, Card, CardContent, Typography, CardHeader, Avatar, CardActions, IconButton, Link } from '@mui/material';
 import convertDateString from './utils/convertDate';
-import Sort from './types/sort';
 import { useAppDispath, useAppSelector } from './redux/store';
 import { repositoryEdit, repositoryRemoved } from './redux/repositorySlice';
 import EditModal from './components/EditModal/EditModal';
 import useAxios from './hooks/useAxios';
+import { useSort } from './hooks/useSort';
+import Header from './components/Header/Header';
+import Spinner from './components/Spinner/Spinner';
 
 function App() {
   const dispatch = useAppDispath();
   const [editRepository, setEditRepository] = useState<Repository | null>(null)
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const [sort, setSort] = useState<Sort>({
-    sortField: "stars",
-    sortOrder: "desc"
-  })
+  const { sort } = useSort();
+  const { repositories, setRepositories, fetching, totalCount, refetch, refresh } = useAxios(sort)
   const repositoriesStore: Repository[] = useAppSelector(
     (state) => state.repository.items
   );
-
-  const { repositories, setRepositories, fetching, totalCount, refetch, refresh } = useAxios(sort)
 
   useEffect(() => {
     setRepositories(repositoriesStore);
@@ -42,6 +38,10 @@ function App() {
     refresh()
   }, [sort])
 
+  useEffect(() => {
+    document.body.style.overflow = openModal ? 'hidden' : 'auto'
+  }, [openModal])
+
   const scrollHandler = (e: any) => {
     const scrollHeight = e.target.documentElement.scrollHeight;
     const scrollTop = e.target.documentElement.scrollTop;
@@ -49,22 +49,6 @@ function App() {
     if ((scrollHeight - (scrollTop + innerHeight) < 100) && (repositories.length < totalCount)) {
       refetch()
     }
-  }
-
-  const handleChangeSortOrder = (e: SelectChangeEvent) => {
-    const value = e.target.value;
-    setSort((prevState) => ({
-      ...prevState,
-      sortOrder: value,
-    }));
-  }
-
-  const handleChangeSortField = (e: SelectChangeEvent) => {
-    const value = e.target.value;
-    setSort((prevState) => ({
-      ...prevState,
-      sortField: value,
-    }));
   }
 
   const handleRemove = (repository: Repository) => {
@@ -90,39 +74,10 @@ function App() {
   }
 
   return (
-    <div >
-      <header>
-        <AppBar position="fixed">
-          <Toolbar className='appBar-box'>
-            <Typography variant="h5">
-              sort by
-            </Typography>
-            <Select
-              id="sortField"
-              value={sort.sortField}
-              onChange={handleChangeSortField}
-              className='appBar-select'>
-              <MenuItem value={"name"}>Name</MenuItem>
-              <MenuItem value={"forks"}>Fork</MenuItem>
-              <MenuItem value={"stars"}>Stars</MenuItem>
-              <MenuItem value={"watchers"}>Watchers</MenuItem>
-            </Select>
-            <Select
-              id="sortOrder"
-              value={sort.sortOrder}
-              onChange={handleChangeSortOrder}
-              className='appBar-select'>
-              <MenuItem value={"asc"}>asc</MenuItem>
-              <MenuItem value={"desc"}>desc</MenuItem>
-            </Select>
-          </Toolbar>
-        </AppBar>
-        <Toolbar />
-      </header>
-      <main className='container'>
-        {
-          editRepository && <EditModal open={openModal} closeEditModal={handleClose} edit={edit} repository={editRepository} />
-        }
+    <div>
+      {editRepository && <EditModal open={openModal} closeEditModal={handleClose} edit={edit} repository={editRepository} />}
+      <Header />
+      <main className={styles.container}>
         <List className='list'>
           {repositories.map((element) =>
           (
@@ -133,7 +88,6 @@ function App() {
                   title={element.owner.login}
                   subheader={convertDateString(element.created_at)}
                 />
-
                 <CardContent>
                   <Typography variant="h5" className='card-title'>
                     {element.name}
@@ -171,10 +125,7 @@ function App() {
           )
           )}
         </List>
-        {fetching && (
-          <div className="spinner">
-            <RefreshIcon />
-          </div>)}
+        <Spinner fetching={fetching} />
       </main>
     </div>
   )

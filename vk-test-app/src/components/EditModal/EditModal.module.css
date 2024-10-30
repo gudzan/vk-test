@@ -1,5 +1,5 @@
-.new-repo {
-  position: absolute;
+.modal {
+  position: fixed;
   display: none;
   top: 0;
   right: 0;
@@ -14,53 +14,53 @@
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 14px 12px;
 }
 
-.new-repo.open {
+.modal.open {
   display: block;
 }
 
-.new-repo__title {
+.modal__title {
   font-weight: 500;
   font-size: 16px;
 }
 
-.new-repo__close {
+.modal__close {
   position: absolute;
   top: 3px;
   right: 3px;
-
-  svg {
-    color: darkgreen;
-    transition: all .4s ease;
-    border-radius: 50%;
-
-    &:hover {
-      background-color: green;
-      color: white;
-    }
-
-    &:active {
-      background-color: white;
-      color: red;
-    }
-  }
 }
 
-.new-repo__submit {
+.modal__close svg {
+  color: darkgreen;
+  transition: all 0.4s ease;
+  border-radius: 50%;
+}
+
+.modal__close svg:hover {
+  background-color: green;
+  color: white;
+}
+
+.modal__close svg:active {
+  background-color: white;
+  color: red;
+}
+
+.modal__submit {
   background-color: green;
   color: white;
   width: 150px;
   height: 30px;
   border-radius: 15px;
   cursor: pointer;
-  transition: all .1s;
-
-  &:active {
-    scale: 0.95;
-    background-color: green;
-  }
+  transition: all 0.1s;
 }
 
-.new-repo__form {
+.modal__submit:active {
+  scale: 0.95;
+  background-color: green;
+}
+
+.modal__form {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,40 +70,38 @@
 }
 
 @media (min-width: 700px) {
-
-  .new-repo {
+  .modal {
     width: 380px;
   }
 
-  .new-repo__form {
+  .modal__form {
     padding: 20px;
   }
 
-  .new-repo__title {
+  .modal__title {
     font-weight: 600;
     font-size: 18px;
   }
 
-  .new-repo__submit {
+  .modal__submit {
     height: 35px;
   }
-
 }
 
 @media (min-width: 1300px) {
-  .new-repo {
+  .modal {
     width: 480px;
   }
 
-  .new-repo__form {
+  .modal__form {
     padding: 30px;
   }
 
-  .new-repo__form-input {
+  .modal__form-input {
     height: 50px;
   }
 
-  .new-repo__submit {
+  .modal__submit {
     height: 40px;
   }
 }
