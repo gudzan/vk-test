@@ -9,7 +9,7 @@
     }
   ],
   "compilerOptions": {
-    "noEmit": true,
+    "emitDeclarationOnly": true,
     "composite": true,
     "target": "es5",
     "lib": [
@@ -32,4 +32,5 @@
     "jsxFactory": "React.createElement",
     "jsx": "react",
   },
+ "include": ["src/**/*"]
 }
