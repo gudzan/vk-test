@@ -13,7 +13,7 @@ type CardListProps = {
 const CardList = ({ repositories, clickEdit, clickDelete }: CardListProps) => {
 
   return (
-    <List className={styles.list}>
+    <List data-testid="list" className={styles.list}>
       {repositories.map((element) =>
       (
         <ListItem key={element.id}>

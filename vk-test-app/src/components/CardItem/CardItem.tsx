@@ -15,7 +15,7 @@ type CardItemProps = {
 const CardItem = ({ element, clickEdit, clickDelete }: CardItemProps) => {
 
   return (
-    <Card className={styles.card}>
+    <Card className={styles.card} data-testid="card">
       <CardHeader
         avatar={<Avatar alt="avatar" src={element.owner.avatar_url} />}
         title={element.owner.login}

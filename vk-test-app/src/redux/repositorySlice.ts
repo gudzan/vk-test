@@ -2,7 +2,7 @@ import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Repository from "../types/repository";
 import Sort from "../types/sort";
 
-type repositorySliceType = {
+export type repositorySliceType = {
   items: Repository[];
   totalCount: number,
 };
