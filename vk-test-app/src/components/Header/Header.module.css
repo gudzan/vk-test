@@ -1,0 +1,9 @@
+.box {
+  justify-content: center;
+  gap: 15px;
+}
+
+.select {
+  background-color: white;
+  height: 40px;
+}

@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
-import Sort from '../types/sort';
 import Repository from '../types/repository';
 import RepositoriesResponse from '../types/repositoriesResponse';
 import { useAppDispath } from '../redux/store';
-import { repositoryReceved, repositoryRequested, repositoryRequestFailed } from '../redux/repositorySlice';
+import { repositoryReceved, repositoryRequested, repositoryRequestFailed, repositorySorted } from '../redux/repositorySlice';
+import { useSort } from './useSort';
 
-const useAxios = (sort: Sort) => {
+const useAxios = () => {
   const [repositories, setRepositories] = useState<Repository[]>([])
   const [fetching, setFetching] = useState<boolean>(true)
   const [totalCount, setTotalCount] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const { sort } = useSort();
   const dispatch = useAppDispath();
   const token = "o1QPsZPH0o7oyZFH1jYsPkF3wYUBaD316jex"
   axios.defaults.headers.common['Authorization'] = `Bearer ${"ghp_" + token}`;
@@ -32,7 +33,10 @@ const useAxios = (sort: Sort) => {
           ));
         })
         .catch(() => dispatch(repositoryRequestFailed()))
-        .finally(() => setFetching(false))
+        .finally(() => {
+          setFetching(false)
+          dispatch(repositorySorted(sort))
+        })
     }
   }, [fetching]);
 

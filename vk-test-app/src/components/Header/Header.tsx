@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from "./Header.module.css"
 import { Typography, AppBar, Toolbar, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useSort } from '../../hooks/useSort';
 
@@ -6,15 +7,11 @@ const Header = () => {
   const { sort, setSortField, setSortOrder } = useSort();
 
   const handleChangeSortOrder = (e: SelectChangeEvent) => {
-    console.log(e.target.value);
-
     const value = e.target.value;
     setSortOrder(value);
   }
 
   const handleChangeSortField = (e: SelectChangeEvent) => {
-    console.log(e.target.value);
-
     const value = e.target.value;
     setSortField(value);
   }
@@ -22,7 +19,7 @@ const Header = () => {
   return (
     <header>
       <AppBar position="fixed">
-        <Toolbar className='appBar-box'>
+        <Toolbar className={styles.box}>
           <Typography variant="h5">
             sort by
           </Typography>
@@ -30,7 +27,7 @@ const Header = () => {
             id="sortField"
             value={sort.sortField}
             onChange={handleChangeSortField}
-            className='appBar-select'>
+            className={styles.select}>
             <MenuItem value={"name"}>Name</MenuItem>
             <MenuItem value={"forks"}>Fork</MenuItem>
             <MenuItem value={"stars"}>Stars</MenuItem>
@@ -39,7 +36,7 @@ const Header = () => {
             id="sortOrder"
             value={sort.sortOrder}
             onChange={handleChangeSortOrder}
-            className='appBar-select'>
+            className={styles.select}>
             <MenuItem value={"asc"}>asc</MenuItem>
             <MenuItem value={"desc"}>desc</MenuItem>
           </Select>

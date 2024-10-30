@@ -22,7 +22,8 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
   }
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const name = e.target.name;
+    const value = (e.target.type === 'number') ? Number(e.target.value) : e.target.value
     setEditRepositories((prevState) => ({
       ...prevState,
       [name]: value,
@@ -33,7 +34,7 @@ const EditModal = ({ open, closeEditModal, repository, edit }: EditModalProps) =
     <div>
       <Overlay openOverlay={open} closeOverlay={() => closeEditModal()} />
       <div className={modalClassName}>
-        <button type="button" className={`${styles.icon} ${styles.modal__close}`} onClick={() => closeEditModal()}><CloseIcon /></button>
+        <button type="button" className={styles.modal__close} onClick={() => closeEditModal()}><CloseIcon /></button>
         <form className={styles.modal__form} onSubmit={handleSubmit}>
           <span className={styles.modal__title}>Радактирование</span>
           <TextField

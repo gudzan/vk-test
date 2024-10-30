@@ -1,15 +1,15 @@
-.spinner svg {
-  color: gray;
-  font-size: 60px;
-  animation: spinning 1s infinite linear;
+.card {
+  width: 100%;
 }
 
-@keyframes spinning {
-  0% {
-    transform: rotate(0deg);
+@media (min-width: 800px) {
+  .card {
+    width: 70vw;
   }
+}
 
-  100% {
-    transform: rotate(360deg);
+@media (min-width: 1300px) {
+  .card {
+    width: 50vw;
   }
 }

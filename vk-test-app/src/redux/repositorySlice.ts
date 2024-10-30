@@ -1,5 +1,6 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Repository from "../types/repository";
+import Sort from "../types/sort";
 
 type repositorySliceType = {
   items: Repository[];
@@ -32,8 +33,28 @@ export const repositorySlice = createSlice({
       state.items = modifiedArray
     },
     repositoryRemoved: (state, action: PayloadAction<{ repositoryId: number }>) => {
-      state.items = state.items.filter(elem => elem.id !== action.payload.repositoryId);
-      state.totalCount = state.totalCount - 1
+      if (state.items.find(item => item.id === action.payload.repositoryId)) {
+        state.items = state.items.filter(elem => elem.id !== action.payload.repositoryId);
+        state.totalCount = state.totalCount - 1
+      }
+    },
+    repositorySorted: (state, action: PayloadAction<Sort>) => {
+      let field = action.payload.sortField
+      const order = action.payload.sortOrder;
+      if (action.payload.sortField === 'stars') {
+        field = "stargazers_count"
+      }
+      else if (action.payload.sortField === 'forks') {
+        field = "forks_count"
+      }
+      const fieldGetter = (item: Repository) => item[field as keyof Repository];
+      if (order === 'asc') {
+        state.items = state.items.sort((a, b) => fieldGetter(a) - fieldGetter(b));
+      }
+      else {
+        state.items = state.items.sort((a, b) => fieldGetter(b) - fieldGetter(a));
+      }
+
     },
   },
 });
@@ -42,6 +63,6 @@ export const repositoryRequested = createAction("repository/requested");
 export const repositoryRequestFailed = createAction("repository/requestFailed");
 
 const { actions, reducer: repositoryReduser } = repositorySlice;
-export const { repositoryReceved, repositoryRemoved, repositoryEdit } = actions;
+export const { repositoryReceved, repositoryRemoved, repositoryEdit, repositorySorted } = actions;
 
 export default repositoryReduser;

@@ -20,8 +20,6 @@ export const useSort = () => {
 
 export const SortProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sort, setSort] = useState<Sort>(defaultValue)
-  console.log(sort);
-  
 
   const setSortOrder = (newSortOrder: string) => {
     setSort((prevState) => ({

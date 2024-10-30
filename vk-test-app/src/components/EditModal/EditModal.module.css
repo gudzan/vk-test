@@ -69,6 +69,14 @@
   padding: 15px;
 }
 
+button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
 @media (min-width: 700px) {
   .modal {
     width: 380px;
