@@ -13,7 +13,7 @@ const useAxios = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const { sort } = useSort();
   const dispatch = useAppDispath();
-  const token = "o1QPsZPH0o7oyZFH1jYsPkF3wYUBaD316jex"
+  const token = "vxS57AlBFcomkcM0uWNmCtzee7Ddrc3Pj801"
   axios.defaults.headers.common['Authorization'] = `Bearer ${"ghp_" + token}`;
 
   useEffect(() => {
